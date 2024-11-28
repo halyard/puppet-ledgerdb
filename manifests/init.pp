@@ -5,6 +5,7 @@
 # @param grafana_password is the password for Grafana to read from the DB
 # @param ledger_repo is the git repo for ledger data
 # @param ledger_ssh_key is the ssh key to use to update the repo
+# @param ledger_file is the main ledger file to load, relative to the repo root
 # @param version sets the ledgersql tag to use
 # @param postgres_ip sets the address of the postgres Docker container
 # @param user sets the user to run ledgersql as
@@ -16,6 +17,7 @@ class ledgerdb (
   String $grafana_password,
   String $ledger_repo,
   String $ledger_ssh_key,
+  String $ledger_file = 'core.ldg',
   String $version = 'v0.0.1',
   String $postgres_ip = '172.17.0.3',
   String $user = 'ledgersql',
