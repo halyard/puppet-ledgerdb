@@ -123,7 +123,7 @@ class ledgerdb (
   }
 
   ~> service { 'ledgersql.timer':
-    ensure  => running,
-    enable  => true,
+    ensure => running,
+    enable => true,
   }
 }
