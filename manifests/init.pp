@@ -6,7 +6,7 @@
 # @param ledger_repo is the git repo for ledger data
 # @param ledger_ssh_key is the SSH key to use to update the repo
 # @param postgres_ip sets the address of the postgres Docker container
-class grafana (
+class ledgerdb (
   String $datadir,
   String $database_password,
   String $grafana_password,
