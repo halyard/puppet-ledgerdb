@@ -60,8 +60,8 @@ class ledgerdb (
   }
 
   -> file_line { '/root/.ssh/known_hosts':
-      path => '/root/.ssh/known_hosts',
-      line => $ledger_ssh_host_key,
+    path => '/root/.ssh/known_hosts',
+    line => $ledger_ssh_host_key,
   }
 
   -> vcsrepo { "${datadir}/data":
