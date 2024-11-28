@@ -18,7 +18,7 @@ class ledgerdb (
   String $ledger_repo,
   String $ledger_ssh_key,
   String $ledger_file = 'core.ldg',
-  String $version = 'v0.0.1',
+  String $version = 'v0.0.7',
   String $postgres_ip = '172.17.0.3',
   String $user = 'ledgersql',
   String $bootdelay = '300',
