@@ -16,7 +16,7 @@ class ledgerdb (
   String $grafana_password,
   String $ledger_repo,
   String $ledger_ssh_key,
-  String $version = 'v0.0.4',
+  String $version = 'v0.0.1',
   String $postgres_ip = '172.17.0.3',
   String $user = 'ledgersql',
   String $bootdelay = '300',
