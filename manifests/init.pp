@@ -4,7 +4,8 @@
 # @param database_password sets the postgres password for grafana
 # @param grafana_password is the password for Grafana to read from the DB
 # @param ledger_repo is the git repo for ledger data
-# @param ledger_ssh_key is the SSH key to use to update the repo
+# @param ledger_ssh_key is the ssh key to use to update the repo
+# @param ledger_ssh_host_key is the ssh host key to use to update the repo
 # @param postgres_ip sets the address of the postgres Docker container
 class ledgerdb (
   String $datadir,
@@ -12,6 +13,7 @@ class ledgerdb (
   String $grafana_password,
   String $ledger_repo,
   String $ledger_ssh_key,
+  String $ledger_ssh_host_key,
   String $postgres_ip = '172.17.0.3',
 ) {
   file { [
@@ -55,6 +57,11 @@ class ledgerdb (
     ensure  => file,
     mode    => '0600',
     content => $ledger_ssh_key,
+  }
+
+  -> file_line { '/root/.ssh/known_hosts':
+      path => '/root/.ssh/known_hosts',
+      line => $ledger_ssh_host_key,
   }
 
   -> vcsrepo { "${datadir}/data":
