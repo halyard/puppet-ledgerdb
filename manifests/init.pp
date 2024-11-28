@@ -113,8 +113,8 @@ class ledgerdb (
   }
 
   file { '/etc/systemd/system/ledgersql.service':
-    ensure => file,
-    source => 'puppet:///modules/ledgerdb/ledgersql.service',
+    ensure  => file,
+    content => template('ledgerdb/ledgersql.service.erb'),
   }
 
   file { '/etc/systemd/system/ledgersql.timer':

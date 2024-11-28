@@ -6,6 +6,6 @@ StartLimitIntervalSec=271
 [Service]
 Type=simple
 User=slackmastodon
-ExecStart=/usr/local/bin/ledgersql
+ExecStart=/usr/local/bin/ledgersql sync <%= @datadir %>/config.yaml
 Restart=on-failure
 RestartSec=90
