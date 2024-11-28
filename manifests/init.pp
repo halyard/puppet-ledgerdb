@@ -119,7 +119,7 @@ class ledgerdb (
 
   file { '/etc/systemd/system/ledgersql.timer':
     ensure  => file,
-    content => template('ledgersql/ledgersql.timer.erb'),
+    content => template('ledgerdb/ledgersql.timer.erb'),
   }
 
   ~> service { 'ledgersql.timer':
