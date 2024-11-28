@@ -1,0 +1,16 @@
+{
+  "name": "halyard-ledgerdb",
+  "version": "0.0.1",
+  "author": "Les Aker",
+  "license": "MIT",
+  "summary": "Configure ledgerdb instance",
+  "source": "https://github.com/halyard/puppet-ledgerdb",
+  "project_page": "https://github.com/halyard/puppet-ledgerdb",
+  "issues_url": "https://github.com/halyard/puppet-ledgerdb/issues",
+  "dependencies": [
+
+  ],
+  "operatingsystem_support": [
+
+  ]
+}
