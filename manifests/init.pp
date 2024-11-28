@@ -28,7 +28,7 @@ class grafana (
     jump   => 'DNAT',
     proto  => 'tcp',
     dport  => 5432,
-    todest => "${container_ip}:5432",
+    todest => "$postgres_ip}:5432",
     table  => 'nat',
   }
 
