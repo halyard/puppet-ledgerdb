@@ -5,15 +5,36 @@
 # @param grafana_password is the password for Grafana to read from the DB
 # @param ledger_repo is the git repo for ledger data
 # @param ledger_ssh_key is the ssh key to use to update the repo
+# @param version sets the ledgersql tag to use
 # @param postgres_ip sets the address of the postgres Docker container
+# @param user sets the user to run ledgersql as
+# @param bootdelay sets how long to wait before first run
+# @param frequency sets how often to run updates
 class ledgerdb (
   String $datadir,
   String $database_password,
   String $grafana_password,
   String $ledger_repo,
   String $ledger_ssh_key,
+  String $version = 'v0.0.4',
   String $postgres_ip = '172.17.0.3',
+  String $user = 'ledgersql',
+  String $bootdelay = '300',
+  String $frequency = '300'
 ) {
+  group { $user:
+    ensure => present,
+    system => true,
+  }
+
+  user { $user:
+    ensure => present,
+    system => true,
+    gid    => $user,
+    shell  => '/usr/bin/nologin',
+    home   => $datadir,
+  }
+
   file { [
       $datadir,
       "${datadir}/data",
@@ -38,7 +59,7 @@ class ledgerdb (
   }
 
   -> docker::container { 'postgres':
-    image   => 'postgres:14',
+    image   => 'postgres:17',
     args    => [
       "--ip ${postgres_ip}",
       "-v ${datadir}/postgres:/var/lib/postgresql/data",
@@ -63,5 +84,46 @@ class ledgerdb (
     source   => $ledger_repo,
     identity => "${datadir}/identity",
     revision => 'main',
+  }
+
+  package { 'ledger': }
+
+  file { "${datadir}/config.yaml":
+    ensure  => file,
+    content => template('ledgerdb/config.yaml.erb'),
+    group   => $user,
+    mode    => '0640',
+  }
+
+  $arch = $facts['os']['architecture'] ? {
+    'x86_64'  => 'amd64',
+    'arm64'   => 'arm64',
+    'aarch64' => 'arm64',
+    'arm'     => 'arm',
+    default   => 'error',
+  }
+
+  $binfile = '/usr/local/bin/ledgersql'
+  $filename = "ledgersql_${downcase($facts['kernel'])}_${arch}"
+  $url = "https://github.com/akerl/ledgersql/releases/download/${version}/${filename}"
+
+  exec { 'download ledgersql':
+    command => "/usr/bin/curl -sLo '${binfile}' '${url}' && chmod a+x '${binfile}'",
+    unless  => "/usr/bin/test -f ${binfile} && ${binfile} version | grep '${version}'",
+  }
+
+  file { '/etc/systemd/system/ledgersql.service':
+    ensure => file,
+    source => 'puppet:///modules/ledgersql/ledgersql.service',
+  }
+
+  file { '/etc/systemd/system/ledgersql.timer':
+    ensure  => file,
+    content => template('ledgersql/ledgersql.timer.erb'),
+  }
+
+  ~> service { 'ledgersql.timer':
+    ensure  => running,
+    enable  => true,
   }
 }

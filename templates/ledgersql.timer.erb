@@ -1,0 +1,9 @@
+[Unit]
+Description=Schedule ledger SQL sync
+
+[Timer]
+OnBootSec=<%= @bootdelay %>
+OnUnitActiveSec=<%= @frequency %>
+
+[Install]
+WantedBy=multi-user.target

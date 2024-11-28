@@ -1,0 +1,11 @@
+[Unit]
+Description=Update ledger database export
+StartLimitBurst=2
+StartLimitIntervalSec=271
+
+[Service]
+Type=simple
+User=slackmastodon
+ExecStart=/usr/local/bin/ledgersql
+Restart=on-failure
+RestartSec=90
