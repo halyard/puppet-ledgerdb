@@ -6,6 +6,6 @@ StartLimitIntervalSec=271
 [Service]
 Type=simple
 User=<%= @user %>
-ExecStart=/usr/local/bin/ledgersql sync <%= @datadir %>/config.yaml
+ExecStart=/usr/local/bin/ledgerdb sync <%= @datadir %>/config.yaml
 Restart=on-failure
 RestartSec=90
