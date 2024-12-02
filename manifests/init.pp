@@ -42,7 +42,6 @@ class ledgerdb (
   file { [
       $datadir,
       "${datadir}/data",
-      "${datadir}/influxdb",
     ]:
       ensure => directory,
   }
