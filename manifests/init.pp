@@ -1,25 +1,27 @@
 # @summary Configure Ledger DB instance
 #
 # @param datadir sets where the data is persisted
-# @param database_password sets the postgres password for grafana
-# @param grafana_password is the password for Grafana to read from the DB
+# @param hostname sets the hostname for influxdb
+# @param aws_access_key_id sets the AWS key to use for Route53 challenge
+# @param aws_secret_access_key sets the AWS secret key to use for the Route53 challenge
+# @param email sets the contact address for the certificate
 # @param ledger_repo is the git repo for ledger data
 # @param ledger_ssh_key is the ssh key to use to update the repo
 # @param ledger_file is the main ledger file to load, relative to the repo root
 # @param version sets the ledgerdb tag to use
-# @param postgres_ip sets the address of the postgres Docker container
 # @param user sets the user to run ledgerdb as
 # @param bootdelay sets how long to wait before first run
 # @param frequency sets how often to run updates
 class ledgerdb (
   String $datadir,
-  String $database_password,
-  String $grafana_password,
+  String $hostname,
+  String $aws_access_key_id,
+  String $aws_secret_access_key,
+  String $email,
   String $ledger_repo,
   String $ledger_ssh_key,
   String $ledger_file = 'core.ldg',
   String $version = 'v0.0.10',
-  String $postgres_ip = '172.17.0.3',
   String $user = 'ledgerdb',
   String $bootdelay = '300',
   String $frequency = '300'
@@ -40,38 +42,9 @@ class ledgerdb (
   file { [
       $datadir,
       "${datadir}/data",
-      "${datadir}/postgres",
-      "${datadir}/init",
+      "${datadir}/influxdb",
     ]:
       ensure => directory,
-  }
-
-  firewall { '100 dnat for postgres':
-    chain  => 'DOCKER_EXPOSE',
-    jump   => 'DNAT',
-    proto  => 'tcp',
-    dport  => 5432,
-    todest => "${postgres_ip}:5432",
-    table  => 'nat',
-  }
-
-  file { "${datadir}/init/setup.sh":
-    ensure  => file,
-    content => template('ledgerdb/setup.sh.erb'),
-  }
-
-  -> docker::container { 'postgres':
-    image   => 'postgres:17',
-    args    => [
-      "--ip ${postgres_ip}",
-      "-v ${datadir}/postgres:/var/lib/postgresql/data",
-      "-v ${datadir}/init:/docker-entrypoint-initdb.d/",
-      '-e POSTGRES_USER=admin',
-      "-e POSTGRES_PASSWORD=${database_password}",
-      '-e POSTGRES_DB=ledgerdb',
-    ],
-    cmd     => '-c ssl=on -c ssl_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem -c ssl_key_file=/etc/ssl/private/ssl-cert-snakeoil.key',
-    require => File["${datadir}/postgres"],
   }
 
   file { "${datadir}/identity":
@@ -127,5 +100,13 @@ class ledgerdb (
   ~> service { 'ledgerdb.timer':
     ensure => running,
     enable => true,
+  }
+
+  class { 'influxdb':
+    hostname              => $hostname,
+    datadir               => "${datadir}/influxdb",
+    aws_access_key_id     => $aws_access_key_id,
+    aws_secret_access_key => $aws_secret_access_key,
+    email                 => $email,
   }
 }
