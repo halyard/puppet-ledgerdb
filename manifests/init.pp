@@ -1,10 +1,10 @@
 # @summary Configure Ledger DB instance
 #
 # @param datadir sets where the data is persisted
-# @param hostname sets the hostname for influxdb
-# @param aws_access_key_id sets the AWS key to use for Route53 challenge
-# @param aws_secret_access_key sets the AWS secret key to use for the Route53 challenge
-# @param email sets the contact address for the certificate
+# @param influx_url sets the InfluxDB hostname
+# @param influx_org sets the InfluxDB Organization
+# @param influx_token sets the credential to use for metric submission
+# @param influx_bucket sets the InfluxDB bucket
 # @param ledger_repo is the git repo for ledger data
 # @param ledger_ssh_key is the ssh key to use to update the repo
 # @param ledger_file is the main ledger file to load, relative to the repo root
@@ -14,10 +14,10 @@
 # @param frequency sets how often to run updates
 class ledgerdb (
   String $datadir,
-  String $hostname,
-  String $aws_access_key_id,
-  String $aws_secret_access_key,
-  String $email,
+  String $influx_url,
+  String $influx_org,
+  String $influx_token,
+  String $influx_bucket,
   String $ledger_repo,
   String $ledger_ssh_key,
   String $ledger_file = 'core.ldg',
@@ -99,13 +99,5 @@ class ledgerdb (
   ~> service { 'ledgerdb.timer':
     ensure => running,
     enable => true,
-  }
-
-  class { 'influxdb':
-    hostname              => $hostname,
-    datadir               => "${datadir}/influxdb",
-    aws_access_key_id     => $aws_access_key_id,
-    aws_secret_access_key => $aws_secret_access_key,
-    email                 => $email,
   }
 }
