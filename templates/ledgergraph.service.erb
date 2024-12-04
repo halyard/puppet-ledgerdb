@@ -1,0 +1,10 @@
+[Unit]
+Description=ledger web UI
+
+[Service]
+User=<%= @user %>
+ExecStart=/usr/local/bin/ledgergraph serve <%= @datadir %>/config.yaml
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

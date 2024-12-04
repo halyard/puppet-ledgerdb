@@ -1,12 +1,12 @@
 {
-  "name": "halyard-ledgerdb",
+  "name": "halyard-ledgergraph",
   "version": "0.0.28",
   "author": "Les Aker",
   "license": "MIT",
-  "summary": "Configure ledgerdb instance",
-  "source": "https://github.com/halyard/puppet-ledgerdb",
-  "project_page": "https://github.com/halyard/puppet-ledgerdb",
-  "issues_url": "https://github.com/halyard/puppet-ledgerdb/issues",
+  "summary": "Configure ledgergraph instance",
+  "source": "https://github.com/halyard/puppet-ledgergraph",
+  "project_page": "https://github.com/halyard/puppet-ledgergraph",
+  "issues_url": "https://github.com/halyard/puppet-ledgergraph/issues",
   "dependencies": [
 
   ],
